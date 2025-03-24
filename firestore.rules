@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to all collections
+    match /{document=**} {
+      allow read: if true;
+    }
+    
+    // Allow read access to banners collection
+    match /banners/{bannerId} {
+      allow read: if true;
+    }
+    
+    // Allow write access to drivers collection and its documents
+    match /drivers/{driverId} {
+      allow read, write: if true;
+      
+      // Allow access to driver's documents subcollection
+      match /documents/{documentId} {
+        allow read, write: if true;
+      }
+    }
+    
+    // Allow write access to driver documents collection
+    match /driverDocuments/{documentId} {
+      allow read, write: if true;
+    }
+    
+    // Protect other collections
+    match /{collection}/{document=**} {
+      allow write: if false;
+    }
+  }
+}
